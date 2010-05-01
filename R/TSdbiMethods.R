@@ -46,13 +46,14 @@ setMethod("TSconnect",   signature(drv="fameDriver", dbname="character"),
    } )
 
 
-setMethod("TSdates",  signature(serIDs="character", con="TSfameConnection"),
-   definition= function(serIDs, con, ... )  
+setMethod("TSdates",  
+   signature(serIDs="character", con="TSfameConnection", vintage="ANY", panel="ANY"),
+   definition= function(serIDs, con, vintage=NULL, panel=NULL, ... )  
 {  # Indicate  dates for which data is available.
    # This requires retrieving series individually so they are not truncated.
    r <- av <- st <- en <- tb <- NULL
    for (i in 1:length(serIDs))
-     {r <- try(TSget( serIDs[i], con=con)) 
+     {r <- try(TSget( serIDs[i], con=con), silent=TRUE) 
       if(inherits(r, "try-error") ) {
         av <- c(av, FALSE)
 	st <- append(st, list(NA))
@@ -179,8 +180,10 @@ setMethod("TSlabel",   signature(x="character", con="TSfameConnection"),
    definition= function(x, con=getOption("TSconnection"), ...)
      as(NA, "character") )
 
-setMethod("TSdelete", signature(serIDs="character", con="TSfameConnection"),
- definition= function(serIDs, con=getOption("TSconnection"), ...){
+setMethod("TSdelete",
+   signature(serIDs="character", con="TSfameConnection", vintage="ANY", panel="ANY"),
+   definition= function(serIDs, con=getOption("TSconnection"),  
+            vintage=getOption("TSvintage"), panel=getOption("TSpanel"), ...){
     ok <- TRUE
     for (i in seq(length(serIDs))) 
       ok <- ok & 0 == fameDeleteObject(con@dbname, serIDs[i]) 
@@ -191,8 +194,10 @@ setMethod("TSdelete", signature(serIDs="character", con="TSfameConnection"),
    })
 
 
-setMethod("TSexists", signature(serIDs="character", con="TSfameConnection"),
- definition= function(serIDs, con=getOption("TSconnection"), ...){
+setMethod("TSexists", 
+ signature(serIDs="character", con="TSfameConnection", vintage="ANY", panel="ANY"),
+ definition= function(serIDs, con=getOption("TSconnection"), 
+                      vintage=NULL, panel=NULL, ...){
    op <- options(warn=-1)
    on.exit(options(op))
    ok <- fameWhats(con@dbname, serIDs, getDoc = FALSE)
