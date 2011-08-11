@@ -1,6 +1,6 @@
 Package: TSfame
-Version: 2011.8-1
-Date: 2011-08-03
+Version: 2011.8-2
+Date: 2011-08-11
 Title: Time Series Database Interface extensions for fame
 Description: TSfame provides a fame interface for TSdbi.
 Depends: R (>= 2.8.0), methods, tframe, tframePlus(>= 2011.8-1), TSdbi
@@ -14,6 +14,6 @@ Maintainer: Paul Gilbert <pgilbert@bank-banque-canada.ca>
 URL: http://www.bank-banque-canada.ca/pgilbert
 Repository: CRAN
 Repository/R-Forge/Project: tsdbi
-Repository/R-Forge/Revision: 257
-Date/Publication: 2011-08-05 16:52:37
-Packaged: 2011-08-04 20:53:24 UTC; rforge
+Repository/R-Forge/Revision: 258
+Date/Publication: 2011-08-12 15:00:57
+Packaged: 2011-08-11 20:48:48 UTC; rforge
