@@ -108,8 +108,8 @@ setMethod("TSdates",
 
 setMethod("TSget",     signature(serIDs="character", con="TSfameServerConnection"),
    definition=function(serIDs, con, TSrepresentation=getOption("TSrepresentation"),
-       tf=NULL, start=tfstart(tf), end=tfend(tf),
-       names=NULL, TSdescription=FALSE, TSdoc=FALSE, TSlabel=FALSE,
+       tf=NULL, start=tfstart(tf), end=tfend(tf), names=NULL, 
+       TSdescription=FALSE, TSdoc=FALSE, TSlabel=FALSE, TSsource=TRUE,
        vintage=getOption("TSvintage"), ...)
 { # ... arguments unused
   if (is.null(TSrepresentation)) TSrepresentation <- "default"
@@ -135,7 +135,7 @@ setMethod("TSget",     signature(serIDs="character", con="TSfameServerConnection
     dbname <- rep(con@dbname, length(serIDs))   
   }
 
-  mat <- desc <- doc <- label <-  rp <- NULL
+  mat <- desc <- doc <- label <- source <-  rp <- NULL
   for (i in seq(length(serIDs))) {
     r <- getfame(serIDs[i], db=dbname[i], connection=S3Part(con),
               save = FALSE, envir = parent.frame(),
@@ -154,9 +154,10 @@ setMethod("TSget",     signature(serIDs="character", con="TSfameServerConnection
        r <- zoo(c(r[[1]]), order.by=as.Date(ti(r[[1]])), frequency=frequency(r[[1]]))
        }
     mat <- tbind(mat, r)
-    if(TSdescription) desc <- c(desc, TSdescription(serIDs[i],con) ) 
-    if(TSdoc)         doc  <- c(doc,  TSdoc(serIDs[i],con) ) 
-    if(TSlabel)       label<- c(label,as(NA, "character")) #TSlabel(serIDs[i],con) ) 
+    if(TSdescription) desc   <- c(desc,   TSdescription(serIDs[i],con) ) 
+    if(TSdoc)         doc    <- c(doc,    TSdoc(serIDs[i],con) ) 
+    if(TSlabel)       label  <- c(label,  as(NA, "character")) #TSlabel(serIDs[i],con) ) 
+    if(TSsource)      source <- c(source, "Fame db") #could be better
     }
 
   if(TSlabel) warning("TSlabel not supported in Fame.") 
@@ -175,11 +176,12 @@ setMethod("TSget",     signature(serIDs="character", con="TSfameServerConnection
 
   TSmeta(mat) <- new("TSmeta", serIDs=serIDs, dbname=dbname, 
       hasVintages=con@hasVintages, hasPanels=con@hasPanels,
-      conType=class(con), DateStamp=Sys.time(), 
-      TSdescription=if(TSdescription) paste(desc, " from ", dbname, 
-            "retrieved ", Sys.time()) else as(NA, "character"), 
-      TSdoc=if(TSdoc) doc else as(NA, "character"),
-      TSlabel=if(TSlabel) label else as(NA, "character"))
+      conType=class(con), 
+      DateStamp=Sys.time(), 
+      TSdescription=if(TSdescription) paste(desc, " from ", dbname) else NA, 
+      TSdoc=if(TSdoc)        doc   else NA,
+      TSlabel=if(TSlabel)   label  else NA,
+      TSsource=if(TSsource) source else NA )
   mat
 } )
 
@@ -187,11 +189,12 @@ setMethod("TSget",     signature(serIDs="character", con="TSfameServerConnection
 setMethod("TSput",     signature(x="ANY", serIDs="character", con="TSfameServerConnection"),
    definition= function(x, serIDs=seriesNames(x), con,   
        TSdescription.=TSdescription(x), TSdoc.=TSdoc(x), TSlabel.=NULL, 
-       warn=TRUE, ...) 
+       TSsource.=NULL, warn=TRUE, ...) 
  {
   if (con@hasVintages)
     stop("TSput does not support vintages. Open the con to a single dbname.")
-  if (!is.null(TSlabel.)) warning("TSlabel is not supported in Fame.")
+  if (!is.null(TSlabel.))  warning("TSlabel is not supported in Fame.")
+  if (!is.null(TSsource.)) warning("TSsource is not supported in Fame.")
   if ( 1 < length(con@dbname))
     stop("TSput does not support vintages. Open the con to a single dbname.")
   ids <-  serIDs 
@@ -230,17 +233,24 @@ setMethod("TSput",     signature(x="ANY", serIDs="character", con="TSfameServerC
 setMethod("TSdescription",   signature(x="character", con="TSfameServerConnection"),
    definition= function(x, con=getOption("TSconnection"), ...){
      r <- fameWhats(con@dbname[1], x, connection=S3Part(con), getDoc = TRUE)$des 
-     if (is.null(r)) stop("Series does not exist.")
-     r})
+     if (is.null(r)) stop("Series (probably) does not exist.")
+     #if(is.null(r) || is.na(r)|| ("NA" == r)) NA else r 
+     if(is.na(r)|| ("NA" == r)) NA else r })
 
 setMethod("TSdoc",   signature(x="character", con="TSfameServerConnection"),
    definition= function(x, con=getOption("TSconnection"), ...){
      r <- fameWhats(con@dbname[1], x, connection=S3Part(con), getDoc = TRUE)$doc
-     if (is.null(r)) stop("Series does not exist.")
-     r})
+     if (is.null(r)) stop("Series (probably) does not exist.")
+     #if(is.null(r) || is.na(r)|| ("NA" == r)) NA else r 
+     if(is.na(r)|| ("NA" == r)) NA else r })
 
-#TSlabel gets used for new("Meta", so issuing a warning is not a good idea here.
+#TSlabel,TSsource, get used for new("Meta", so issuing a warning is not a good idea here.
+
 setMethod("TSlabel",   signature(x="character", con="TSfameServerConnection"),
+   definition= function(x, con=getOption("TSconnection"), ...)
+     as(NA, "character") )
+
+setMethod("TSsource",   signature(x="character", con="TSfameServerConnection"),
    definition= function(x, con=getOption("TSconnection"), ...)
      as(NA, "character") )
 
