@@ -1,9 +1,9 @@
-8a646b2adb9c1e5d3105ec3c9e1db9b1 *DESCRIPTION
+b15da24ba9de35e46d3d876c194696d1 *DESCRIPTION
 56b868474e1369fe92a0a6039b30cb3e *NAMESPACE
-42c27fd654440952c1b7d64e6470b13d *NEWS
+5e971b2c2013a81b05862a88c4c165ea *NEWS
 3abb5801a9a7cd923d02e984c5099ee0 *R/TSdbiMethods.R
 669aee60fcdab5394c86130dcbd1b50d *R/TSdbiMethodsFS.R
-1f04d76d2fb89842ef23ef8b24323d86 *inst/doc/Guide.pdf
+11431f18fdc25185049a863de71af684 *inst/doc/Guide.pdf
 35ef84403f4770ee8f5a31fe64f9e053 *man/TSdbiMethods.Rd
 0c09ee3324b5a9fc42598e020fc6c3f5 *man/vintageMap.Rd
 37b03ff2e96207f61e88a20a9d7db414 *tests/0serviceCheck.R
@@ -12,4 +12,4 @@ dd11ffe644516bb41c1591e7d4a30677 *tests/TSfame.R
 d771b3ddc76e8f7f4181438f49c74062 *tests/fame.R
 8889c144f5773a41c5dea94a27c6c5ad *tests/fameServer.R
 50895d2c8130b76bc6386ec518379548 *tests/vintage.R
-a2e02b4d7435c1e9eaba52439880ff71 *vignettes/Guide.Stex
+2d8d45c53c041db20b73d25027d2b223 *vignettes/Guide.Stex
